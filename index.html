@@ -3,211 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚖️ رادار القانون | محرك البحث الشامل</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gold: #c5a059;
-            --dark: #0f172a;
-            --accent: #1e293b;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--dark);
-            color: #e2e8f0;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        /* خلفية متحركة ذكية */
-        .bg-animate {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
-            z-index: -1;
-        }
-
-        .container { max-width: 1000px; margin: auto; padding: 40px 20px; }
-
-        header { text-align: center; margin-bottom: 60px; }
-        h1 { font-family: 'Amiri', serif; font-size: 3.5rem; color: var(--gold); margin: 0; }
-
-        /* منطقة البحث المركزية */
-        .search-engine {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 40px;
-            border-radius: 30px;
-            border: 1px solid rgba(197, 160, 89, 0.2);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        }
-
-        .input-group {
-            display: flex;
-            background: #fff;
-            border-radius: 15px;
-            overflow: hidden;
-            padding: 5px;
-        }
-
-        input {
-            flex: 1;
-            border: none;
-            padding: 15px 20px;
-            font-size: 1.1rem;
-            outline: none;
-            font-family: 'Cairo';
-        }
-
-        .search-btn {
-            background: var(--gold);
-            color: white;
-            border: none;
-            padding: 0 30px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .search-btn:hover { background: #a38445; }
-
-        /* خيارات البحث المتقدم */
-        .filters {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .filter-chip {
-            background: var(--accent);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
-
-        .filter-chip:hover, .filter-chip.active {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        /* منطقة النتائج الذكية */
-        .results-info { margin-top: 30px; text-align: center; color: var(--gold); font-weight: bold; display: none; }
-        
-        .source-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .source-card {
-            background: rgba(255,255,255,0.05);
-            padding: 25px;
-            border-radius: 20px;
-            transition: 0.3s;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .source-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .source-card h3 { color: var(--gold); margin-top: 0; }
-        .source-card p { font-size: 0.9rem; color: #94a3b8; }
-        
-        .action-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: white;
-            text-decoration: none;
-            background: rgba(197, 160, 89, 0.2);
-            padding: 8px 20px;
-            border-radius: 10px;
-            border: 1px solid var(--gold);
-        }
-
-    </style>
+    <title>⚖️ رادار القانون الذكي</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="bg-animate"></div>
-
-<div class="container">
-    <header>
-        <h1>رادار القانون</h1>
-        <p>ابحث في ملايين الكتب والمخطوطات القانونية بضغطة واحدة</p>
-    </header>
-
-    <div class="search-engine">
-        <div class="input-group">
-            <input type="text" id="mainSearch" placeholder="اكتب عنوان الكتاب أو اسم الفقيه هنا...">
-            <button class="search-btn" onclick="executeAdvancedSearch()">ابحث الآن</button>
+    <div class="main-container">
+        <h1>رادار البحث القانوني</h1>
+        <p>ابحث عن المراجع والكتب القانونية في ثوانٍ</p>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="أدخل اسم الكتاب (مثلاً: القانون المدني)...">
+            <button onclick="startSearch()">ابحث في المصادر</button>
         </div>
-
-        <div class="filters">
-            <div class="filter-chip active" onclick="setSource('all')">شامل</div>
-            <div class="filter-chip" onclick="setSource('archive')">أرشيف الكتب</div>
-            <div class="filter-chip" onclick="setSource('waqfeya')">المكتبة الوقفية</div>
-            <div class="filter-chip" onclick="setSource('google')">كتب جوجل</div>
-        </div>
+        
+        <div id="results"></div>
     </div>
 
-    <div id="status" class="results-info">جاري توجيه الرادار نحو المصادر...</div>
-
-    <div class="source-grid" id="resultsGrid">
-        <div class="source-card">
-            <h3>كيف تعمل الأداة؟</h3>
-            <p>بدلاً من البحث اليدوي المجهد، يقوم "رادار القانون" بصياغة استعلامات معقدة موجهة نحو قواعد البيانات القانونية الكبرى ليعطيك رابطاً مباشراً للنتائج في تلك المواقع.</p>
-        </div>
-    </div>
-</div>
-
-<script>
-    let currentSource = 'all';
-
-    function setSource(src) {
-        currentSource = src;
-        document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active'));
-        event.target.classList.add('active');
-    }
-
-    function executeAdvancedSearch() {
-        const query = document.getElementById('mainSearch').value;
-        if (!query) { alert('من فضلك اكتب شيئاً للبحث عنه'); return; }
-
-        const status = document.getElementById('status');
-        status.style.display = 'block';
-
-        // المنطق البرمجي للبحث الفعال:
-        // نقوم بصياغة روابط بحث متقدمة (Dorks) تجبر محركات البحث على إيجاد ملفات PDF فقط
-        
-        let searchUrl = "";
-        
-        if (currentSource === 'archive') {
-            searchUrl = `https://archive.org/details/books?query=${encodeURIComponent(query)}+law`;
-        } else if (currentSource === 'waqfeya') {
-            searchUrl = `https://www.google.com/search?q=site:waqfeya.net+${encodeURIComponent(query)}`;
-        } else {
-            // البحث الأقوى: يبحث عن ملفات PDF القانونية فقط في كل الإنترنت
-            searchUrl = `https://www.google.com/search?q=filetype:pdf+intitle:${encodeURIComponent(query)}+قانون`;
-        }
-
-        // إظهار بطاقة النتيجة الذكية
-        const grid = document.getElementById('resultsGrid');
-        grid.innerHTML = `
-            <div class="source-card" style="grid-column: 1/-1; border: 2px solid var(--gold);">
-                <h3>✅ تم العثور على نتائج لـ: "${query}"</h3>
-                <p>لقد قمنا بفحص المصادر القانونية. اضغط على الزر أدناه لفتح قائمة الكتب المتاحة للتحميل المباشر.</p>
-                <a href="${searchUrl}" target="_blank" class="action-link">استعراض الكتب المكتشفة (تحميل مباشر PDF)</a>
-            </div>
-        `;
-        
-        setTimeout(() => { status.style.display = 'none'; }, 1000);
-    }
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
