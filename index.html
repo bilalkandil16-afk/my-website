@@ -8,16 +8,14 @@
 </head>
 <body>
 
-    <div class="main-container">
+    <div class="container">
         <h1>رادار البحث القانوني</h1>
-        <p>ابحث عن المراجع والكتب القانونية في ثوانٍ</p>
+        <p>ابحث عن الكتب والشروحات القانونية بضغطة واحدة</p>
         
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="أدخل اسم الكتاب (مثلاً: القانون المدني)...">
-            <button onclick="startSearch()">ابحث في المصادر</button>
-        </div>
+        <input type="text" id="lawInput" placeholder="أدخل اسم الكتاب (مثلاً: الالتزامات والعقود)...">
+        <button onclick="startSearch()">ابحث الآن</button>
         
-        <div id="results"></div>
+        <div id="status" style="margin-top: 20px; color: #a8b8d8;"></div>
     </div>
 
     <script src="script.js"></script>
