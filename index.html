@@ -3,246 +3,334 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📚 مكتبة القانون الرقمية</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
+<title>⚖️ مكتبة القانون | الفخامة القانونية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <style>
+:root {
+  --gold: #e8b923;
+  --gold2: #f4d47c;
+  --navy: #0a1428;
+  --deep: #050d1f;
+  --text: #f0f4ff;
+  --muted: #a8b8d8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: 'Cairo', sans-serif;
-  background: #0a192f;
-  color: #e0e1dd;
-  margin: 0;
-  padding: 20px;
+  background: var(--deep);
+  color: var(--text);
+  overflow-x: hidden;
 }
 
-.container {
-  max-width: 1200px;
+.bg {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(232,185,35,0.15) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(30,60,120,0.2) 0%, transparent 60%),
+              linear-gradient(135deg, #0a1428 0%, #050d1f 100%);
+  z-index: -2;
+}
+.bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(232,185,35,0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(232,185,35,0.04) 1px, transparent 1px);
+  background-size: 70px 70px;
+  opacity: 0.6;
+}
+
+/* Navbar */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(5,13,31,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(232,185,35,0.25);
+  padding: 1rem 0;
+}
+
+.nav-content {
+  max-width: 1400px;
   margin: auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-header {
+.logo {
+  font-family: 'Amiri', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   text-align: center;
-  margin-bottom: 40px;
+  position: relative;
 }
 
-h1 span {
-  color: #d4af37;
+.hero-content h1 {
+  font-family: 'Amiri', serif;
+  font-size: clamp(3.8rem, 9vw, 7.5rem);
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, #fff, var(--gold), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.search-controls {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 10px;
-  margin-bottom: 30px;
+.hero-content p {
+  font-size: 1.35rem;
+  color: var(--muted);
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
 }
 
-input, select, button {
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
+/* Search */
+.search-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  position: relative;
 }
 
-input, select {
+.search-box {
+  width: 100%;
+  padding: 1.4rem 1.8rem 1.4rem 4.5rem;
+  font-size: 1.2rem;
   background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(232,185,35,0.3);
+  border-radius: 9999px;
   color: white;
+  backdrop-filter: blur(15px);
+  transition: all 0.4s;
 }
 
-button {
-  background: #d4af37;
-  color: #0a192f;
-  font-weight: bold;
-  cursor: pointer;
+.search-box:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 6px rgba(232,185,35,0.15);
+  transform: scale(1.02);
 }
 
-.results-grid {
+/* Books Grid */
+#books-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 3rem auto;
+  padding: 0 2rem;
 }
 
 .book-card {
-  background: rgba(255,255,255,0.05);
-  padding: 20px;
-  border-radius: 12px;
-  transition: 0.3s;
-  border-right: 4px solid #d4af37;
+  background: rgba(255,255,255,0.06);
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(232,185,35,0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 .book-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255,255,255,0.1);
+  transform: translateY(-15px) scale(1.03);
+  border-color: var(--gold);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
 }
 
-.tag {
-  color: #d4af37;
-  font-size: 12px;
+.book-cover {
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6.5rem;
+  position: relative;
+  background: linear-gradient(135deg, #1a2338, #0f1b2e);
 }
 
-.empty {
-  text-align: center;
-  opacity: 0.6;
-  margin-top: 40px;
+.book-body {
+  padding: 1.5rem;
 }
 
-.loading {
-  text-align: center;
-  margin-top: 40px;
+.book-title {
+  font-family: 'Amiri', serif;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
 }
 
-a {
-  display: block;
-  margin-top: 10px;
-  text-align: center;
-  padding: 10px;
-  border: 1px solid #d4af37;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #d4af37;
+.book-author {
+  color: var(--muted);
+  margin-bottom: 1rem;
 }
 
-a:hover {
-  background: #d4af37;
-  color: #0a192f;
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(5,13,31,0.95);
+  backdrop-filter: blur(20px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
 }
 
-@media (max-width: 768px) {
-  .search-controls {
-    grid-template-columns: 1fr;
-  }
+.modal-content {
+  background: #0f1b2e;
+  border: 1px solid var(--gold);
+  border-radius: 28px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* إضافات أخرى */
+.gold-btn {
+  background: linear-gradient(90deg, var(--gold), #f4d47c);
+  color: #0a1428;
+  font-weight: 700;
 }
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="bg"></div>
 
-<header>
-<h1>مكتبة <span>القانون</span> الرقمية</h1>
-<p>ابحث في أفضل المصادر القانونية بسهولة</p>
-</header>
+<nav>
+  <div class="nav-content">
+    <div class="logo">⚖️ مكتبة القانون</div>
+    <div style="display:flex;gap:2rem;font-size:1.1rem;">
+      <a href="#books" style="color:var(--muted);text-decoration:none;">الكتب</a>
+      <a href="#" onclick="showSaved()" style="color:var(--muted);text-decoration:none;">المحفوظات (<span id="savedCount">0</span>)</a>
+    </div>
+  </div>
+</nav>
 
-<div class="search-controls">
-<input id="search" placeholder="ابحث عن كتاب أو مؤلف...">
-<select id="cat">
-<option value="">كل التخصصات</option>
-<option value="civil">قانون مدني</option>
-<option value="criminal">قانون جنائي</option>
-<option value="administrative">قانون إداري</option>
-<option value="commercial">قانون تجاري</option>
-</select>
-<button onclick="search()">بحث</button>
-</div>
+<section class="hero">
+  <div class="hero-content" style="max-width:1100px;margin:auto;padding:0 20px;">
+    <h1>مكتبة القانون الرقمية</h1>
+    <p>المرجع العربي الأكثر شمولاً وفخامة</p>
+    
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-box" placeholder="ابحث عن كتاب أو مؤلف أو موضوع...">
+    </div>
+  </div>
+</section>
 
-<div id="results" class="results-grid"></div>
+<section id="books" style="padding:4rem 0;background:rgba(0,0,0,0.3);">
+  <div style="max-width:1400px;margin:auto;padding:0 2rem;">
+    <h2 style="font-size:2.2rem;margin-bottom:2rem;text-align:center;">المكتبة الكاملة</h2>
+    <div id="books-container"></div>
+  </div>
+</section>
 
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content p-8" id="modalContent"></div>
 </div>
 
 <script>
-
-// 📚 قاعدة البيانات
+// ==================== البيانات ====================
 const books = [
-{
-title:"الوجيز في القانون الجنائي المغربي",
-author:"لطيفة الداودي",
-cat:"criminal",
-tag:"جنائي",
-url:"https://elkanoon.blogspot.com/2016/06/Code-pena-lmarocain.html"
-},
-{
-title:"الوجيز في المنازعات الإدارية",
-author:"محمد بعلي",
-cat:"administrative",
-tag:"إداري",
-url:"https://elkanoon.blogspot.com/2016/04/blog-post_98.html"
-},
-{
-title:"المسطرة المدنية",
-author:"جواد أمهمول",
-cat:"civil",
-tag:"مدني",
-url:"https://kanonin.com/books/"
-},
-{
-title:"الحقوق العينية",
-author:"إدريس الفاخوري",
-cat:"civil",
-tag:"حقوق عينية",
-url:"https://kanonin.com/books/"
-},
-{
-title:"قانون الالتزامات والعقود",
-author:"مأمون الكزبري",
-cat:"civil",
-tag:"التزامات",
-url:"https://www.fsjesouissi.com/search/label/"
-}
+  {id:1, title:"الوسيط في شرح القانون المدني", author:"عبد الرزاق السنهوري", category:"مدني", year:1952, pages:980, rating:5.0, emoji:"📜"},
+  {id:2, title:"أصول الفقه الإسلامي", author:"وهبة الزحيلي", category:"فقه", year:1986, pages:1240, rating:4.9, emoji:"⚖️"},
+  {id:3, title:"شرح قانون العقوبات", author:"محمود نجيب حسني", category:"جنائي", year:1998, pages:756, rating:4.8, emoji:"🔍"},
+  {id:4, title:"القانون الدولي العام", author:"محمد سامي عبد الحميد", category:"دولي", year:2010, pages:612, rating:4.7, emoji:"🌍"},
+  {id:5, title:"القانون الدستوري المقارن", author:"سعد عصفور", category:"دستوري", year:2005, pages:544, rating:4.6, emoji:"🏛️"},
+  // أضف المزيد حسب الحاجة...
 ];
 
-// 🔍 تحسين البحث العربي
-function normalize(text){
-return text
-.toLowerCase()
-.replace(/[أإآ]/g,"ا")
-.replace(/ة/g,"ه")
-.replace(/ى/g,"ي");
+let savedBooks = JSON.parse(localStorage.getItem('savedLawBooks') || '[]');
+
+// ==================== Render Books ====================
+function renderBooks(filteredBooks) {
+  const container = document.getElementById('books-container');
+  container.innerHTML = filteredBooks.map(book => `
+    <div class="book-card" onclick="openModal(${book.id})">
+      <div class="book-cover">${book.emoji}</div>
+      <div class="book-body">
+        <div style="color:var(--gold);font-size:0.9rem;">${book.category}</div>
+        <div class="book-title">${book.title}</div>
+        <div class="book-author">${book.author} • ${book.year}</div>
+        <div style="margin-top:1rem;display:flex;justify-content:space-between;align-items:center;">
+          <span>${book.pages} صفحة</span>
+          <span style="color:#ffd700;">${book.rating} ★</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
 
-// 🔍 البحث
-function search(){
+// ==================== Modal ====================
+function openModal(id) {
+  const book = books.find(b => b.id === id);
+  document.getElementById('modalContent').innerHTML = `
+    <div style="text-align:center;font-size:7rem;margin-bottom:1.5rem;">${book.emoji}</div>
+    <h2 style="font-size:2rem;margin-bottom:0.5rem;">${book.title}</h2>
+    <p style="color:var(--muted);margin-bottom:2rem;">${book.author} • ${book.year}</p>
+    <button onclick="toggleSave(${book.id});" class="gold-btn px-8 py-4 rounded-2xl text-lg w-full mb-4">
+      ${savedBooks.includes(book.id) ? '✓ محفوظ' : 'حفظ في المحفوظات'}
+    </button>
+    <button onclick="closeModal()" class="px-8 py-4 border border-white/30 rounded-2xl w-full">إغلاق</button>
+  `;
+  document.getElementById('modal').style.display = 'flex';
+}
 
-showLoading();
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
 
-setTimeout(() => {
+// ==================== حفظ ====================
+function toggleSave(id) {
+  if (savedBooks.includes(id)) {
+    savedBooks = savedBooks.filter(s => s !== id);
+  } else {
+    savedBooks.push(id);
+  }
+  localStorage.setItem('savedLawBooks', JSON.stringify(savedBooks));
+  updateSavedCount();
+  closeModal();
+}
 
-const q = normalize(document.getElementById("search").value);
-const cat = document.getElementById("cat").value;
+function updateSavedCount() {
+  document.getElementById('savedCount').textContent = savedBooks.length;
+}
 
-const filtered = books.filter(b => {
-const text = normalize(b.title + " " + b.author);
-return text.includes(q) && (cat === "" || b.cat === cat);
+function showSaved() {
+  if (savedBooks.length === 0) {
+    alert("لا توجد كتب محفوظة بعد");
+    return;
+  }
+  const saved = books.filter(b => savedBooks.includes(b.id));
+  renderBooks(saved);
+  window.scrollTo({top: document.getElementById('books').offsetTop - 100, behavior:'smooth'});
+}
+
+// ==================== بحث ====================
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const term = e.target.value.toLowerCase();
+  const filtered = books.filter(b => 
+    b.title.toLowerCase().includes(term) || 
+    b.author.toLowerCase().includes(term)
+  );
+  renderBooks(filtered);
 });
 
-render(filtered);
-
-}, 200);
-}
-
-// 🎨 عرض النتائج
-function render(data){
-const container = document.getElementById("results");
-
-if(data.length === 0){
-container.innerHTML = `<div class="empty">❌ لا توجد نتائج</div>`;
-return;
-}
-
-container.innerHTML = data.map(b => `
-<div class="book-card">
-<span class="tag">${b.tag}</span>
-<h3>${b.title}</h3>
-<p>${b.author}</p>
-<a href="${b.url}" target="_blank">📥 فتح / تحميل</a>
-</div>
-`).join("");
-}
-
-// ⏳ loading
-function showLoading(){
-document.getElementById("results").innerHTML =
-`<div class="loading">⏳ جاري البحث...</div>`;
-}
-
-// 🔥 البحث التلقائي
-document.getElementById("search").addEventListener("input", search);
-document.getElementById("cat").addEventListener("change", search);
-
-// 🚀 تشغيل أولي
-window.onload = search;
-
+// Init
+renderBooks(books);
+updateSavedCount();
 </script>
-
 </body>
 </html>
