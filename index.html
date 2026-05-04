@@ -1,460 +1,142 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partage Légal | المنصة القانونية الاحترافية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --dark-wood: #2c1a12;
-            --accent-gold: #c5a059;
-            --gold-light: #e6d4a8;
-            --legal-brown: #5c3023;
-            --paper: #fdfaf5;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚖️ Partage Légal PRO</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: #f5f0e6;
-            background-image: 
-                linear-gradient(rgba(44, 26, 18, 0.03), rgba(44, 26, 18, 0.03)),
-                url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            color: #333;
-            line-height: 1.7;
-        }
+<style>
+body {
+  font-family: 'Cairo', sans-serif;
+  background: linear-gradient(135deg,#1a0d08,#2c1a12);
+  color: #eee;
+  margin: 0;
+}
 
-        header {
-            background: linear-gradient(135deg, var(--dark-wood), #1a0d08);
-            padding: 60px 20px 80px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
 
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(to right, transparent, var(--accent-gold), transparent);
-        }
+h1 {
+  text-align: center;
+  color: gold;
+}
 
-        .logo {
-            font-family: 'Amiri', serif;
-            font-size: 3.8rem;
-            color: var(--accent-gold);
-            text-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
-            margin-bottom: 8px;
-        }
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
 
-        .subtitle {
-            color: var(--gold-light);
-            font-size: 1.25rem;
-            font-style: italic;
-            opacity: 0.95;
-        }
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: -50px auto 50px;
-            padding: 0 20px;
-        }
+button {
+  padding: 12px;
+  background: gold;
+  border: none;
+  cursor: pointer;
+}
 
-        .section-box {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            margin-bottom: 35px;
-            box-shadow: 0 15px 45px rgba(61, 31, 20, 0.12);
-            border: 1px solid rgba(197, 160, 89, 0.15);
-        }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+  gap: 15px;
+}
 
-        h2 {
-            font-family: 'Amiri', serif;
-            color: var(--dark-wood);
-            font-size: 2.1rem;
-            margin-bottom: 25px;
-            padding-right: 18px;
-            border-right: 6px solid var(--accent-gold);
-        }
+.card {
+  background: #2c1a12;
+  padding: 15px;
+  border-radius: 10px;
+}
 
-        /* محرك البحث المتطور */
-        .search-group {
-            display: flex;
-            background: white;
-            border: 3px solid var(--accent-gold);
-            border-radius: 50px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(197, 160, 89, 0.15);
-        }
-
-        .search-group input {
-            flex: 1;
-            border: none;
-            padding: 18px 25px;
-            font-size: 1.15rem;
-            outline: none;
-        }
-
-        .search-group button {
-            background: var(--dark-wood);
-            color: var(--accent-gold);
-            border: none;
-            padding: 0 35px;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .search-group button:hover {
-            background: #3d2419;
-            transform: scale(1.05);
-        }
-
-        /* منطقة الرفع */
-        .upload-zone {
-            border: 3px dashed var(--accent-gold);
-            padding: 55px 30px;
-            text-align: center;
-            border-radius: 16px;
-            background: #fcfbf7;
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .upload-zone:hover {
-            background: white;
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(197, 160, 89, 0.2);
-        }
-
-        /* الفلاتر */
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-        }
-
-        .filter-btn {
-            padding: 10px 22px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .filter-btn.active {
-            background: var(--dark-wood);
-            color: var(--accent-gold);
-            border-color: var(--accent-gold);
-        }
-
-        /* شبكة الملفات */
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 28px;
-        }
-
-        .file-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            transition: all 0.4s ease;
-            border-top: 6px solid var(--legal-brown);
-        }
-
-        .file-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-        }
-
-        .card-body {
-            padding: 25px;
-        }
-
-        .tag {
-            display: inline-block;
-            padding: 4px 14px;
-            background: rgba(197, 160, 89, 0.1);
-            color: var(--accent-gold);
-            font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 30px;
-            margin-bottom: 12px;
-        }
-
-        .file-card h3 {
-            font-family: 'Amiri', serif;
-            font-size: 1.35rem;
-            line-height: 1.4;
-            margin-bottom: 18px;
-            color: #222;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.95rem;
-            color: #666;
-            margin: 20px 0;
-        }
-
-        .btn-dl {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, var(--dark-wood), #3d2419);
-            color: var(--accent-gold);
-            padding: 15px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 700;
-            border-radius: 8px;
-            transition: 0.3s;
-            font-size: 1.1rem;
-        }
-
-        .btn-dl:hover {
-            background: linear-gradient(135deg, #3d2419, var(--dark-wood));
-            transform: translateY(-2px);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--dark-wood);
-            color: var(--accent-gold);
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: none;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-        }
-    </style>
+.empty {
+  text-align: center;
+  opacity: 0.6;
+}
+</style>
 </head>
-<body>
 
-<header>
-    <h1 class="logo">⚖️ Partage Légal</h1>
-    <p class="subtitle">المنصة الاحترافية لتبادل المعرفة القانونية</p>
-</header>
+<body>
 
 <div class="container">
 
-    <!-- محرك البحث -->
-    <div class="section-box">
-        <h2>🔍 محرك البحث القانوني</h2>
-        <div class="search-group">
-            <input type="text" id="lawSearch" placeholder="ابحث عن كتب، أحكام، مذكرات أو مراجع قانونية...">
-            <button onclick="proSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </div>
-    </div>
+<h1>⚖️ Partage Légal PRO</h1>
 
-    <!-- رفع ملف -->
-    <div class="section-box">
-        <h2>📤 مساهمة في المكتبة</h2>
-        <div class="upload-zone" onclick="PartageApp.showUploadModal()">
-            <i class="fa-solid fa-cloud-upload-alt" style="font-size: 4rem; color: var(--legal-brown); margin-bottom: 20px;"></i>
-            <h3>أضف مرجعاً قانونياً جديداً</h3>
-            <p>يدعم Google Drive, Mega, MediaFire, Dropbox...</p>
-        </div>
-    </div>
-
-    <!-- المكتبة -->
-    <div class="section-box">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h2>📚 المكتبة التشاركية</h2>
-            <div class="filters" id="filterBar"></div>
-        </div>
-        <div class="files-grid" id="proLibrary"></div>
-    </div>
+<div class="search-box">
+<input id="search" placeholder="ابحث داخل المكتبة...">
+<button onclick="search()">بحث</button>
+<button onclick="externalSearch()">🌐</button>
 </div>
 
-<!-- Toast Notification -->
-<div class="toast" id="toast">
-    <i class="fa-solid fa-check-circle"></i>
-    <span id="toastText"></span>
+<div id="grid" class="grid"></div>
+
 </div>
 
 <script>
-    const PartageApp = {
-        db: JSON.parse(localStorage.getItem('pl_pro_db')) || [
-            { 
-                id: 1, 
-                title: "شرح قانون الالتزامات والعقود - الجزء الأول والثاني", 
-                cat: "قانون مدني", 
-                url: "https://example.com/ref1.pdf", 
-                dl: 1240, 
-                likes: 87,
-                date: "2026-04-15"
-            },
-            { 
-                id: 2, 
-                title: "دليل قانون الأسرة المغربي مع التعديلات الجديدة", 
-                cat: "قانون الأسرة", 
-                url: "https://example.com/ref2.pdf", 
-                dl: 980, 
-                likes: 64,
-                date: "2026-04-10"
-            },
-            { 
-                id: 3, 
-                title: "مجموعة أحكام المحكمة الدستورية 2020-2025", 
-                cat: "قانون دستوري", 
-                url: "https://example.com/ref3.pdf", 
-                dl: 675, 
-                likes: 52,
-                date: "2026-04-20"
-            }
-        ],
 
-        categories: ["الكل", "قانون مدني", "قانون الأسرة", "قانون جنائي", "قانون تجاري", "قانون دستوري", "قانون إداري"],
+const db = [
+{ id:1,title:"قانون الالتزامات والعقود",cat:"مدني",url:"https://example.com" },
+{ id:2,title:"القانون الجنائي",cat:"جنائي",url:"https://example.com" },
+{ id:3,title:"قانون الأسرة",cat:"أسرة",url:"https://example.com" }
+];
 
-        init() {
-            this.renderFilters();
-            this.render();
-        },
+// 🔍 normalize عربي
+function normalize(t){
+return t.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه");
+}
 
-        renderFilters() {
-            const container = document.getElementById('filterBar');
-            container.innerHTML = this.categories.map(cat => `
-                <button class="filter-btn \( {cat === 'الكل' ? 'active' : ''}" onclick="PartageApp.filterBy(' \){cat}')">
-                    ${cat}
-                </button>
-            `).join('');
-        },
+// 🔍 بحث داخلي
+function search(){
+const q = normalize(document.getElementById("search").value);
 
-        render(filteredDb = null) {
-            const grid = document.getElementById('proLibrary');
-            const data = filteredDb || this.db;
+const result = db.filter(b=>{
+return normalize(b.title).includes(q);
+});
 
-            grid.innerHTML = data.map(f => `
-                <div class="file-card">
-                    <div class="card-body">
-                        <span class="tag">${f.cat}</span>
-                        <h3>${f.title}</h3>
-                        
-                        <div class="stats">
-                            <span onclick="PartageApp.like(${f.id}); event.stopImmediatePropagation()" style="cursor:pointer;">
-                                <i class="fa-solid fa-heart" style="color:#e74c3c"></i> ${f.likes}
-                            </span>
-                            <span><i class="fa-solid fa-download"></i> ${f.dl.toLocaleString()}</span>
-                        </div>
+render(result);
+}
 
-                        <a href="#" onclick="PartageApp.download(${f.id}); event.preventDefault()" class="btn-dl">
-                            <i class="fa-solid fa-download"></i> تحميل المرجع
-                        </a>
-                    </div>
-                </div>
-            `).join('');
-        },
+// 🌐 بحث خارجي
+function externalSearch(){
+const q = document.getElementById("search").value;
+window.open("https://www.google.com/search?q="+q+" pdf");
+}
 
-        filterBy(category) {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.trim() === category);
-            });
+// 🎨 عرض
+function render(data){
 
-            if (category === "الكل") {
-                this.render();
-            } else {
-                const filtered = this.db.filter(f => f.cat === category);
-                this.render(filtered);
-            }
-        },
+const grid = document.getElementById("grid");
 
-        showUploadModal() {
-            const title = prompt("اسم المرجع القانوني:");
-            if (!title) return;
+if(data.length === 0){
+grid.innerHTML = `<div class="empty">❌ لا توجد نتائج</div>`;
+return;
+}
 
-            const url = prompt("رابط التحميل (Google Drive, Mega...):");
-            if (!url) return;
+grid.innerHTML = data.map(b=>`
+<div class="card">
+<h3>${b.title}</h3>
+<p>${b.cat}</p>
+<a href="${b.url}" target="_blank">تحميل</a>
+</div>
+`).join("");
 
-            const newFile = {
-                id: Date.now(),
-                title: title,
-                url: url,
-                cat: this.guessCategory(title),
-                dl: 0,
-                likes: 0,
-                date: new Date().toISOString().split('T')[0]
-            };
+}
 
-            this.db.unshift(newFile);
-            this.save();
-            this.render();
-            this.showToast("تمت إضافة المرجع بنجاح ✓");
-        },
+// 🔥 live search
+document.getElementById("search").addEventListener("input",search);
 
-        guessCategory(title) {
-            if (title.includes("مدني") || title.includes("التزامات")) return "قانون مدني";
-            if (title.includes("أسرة") || title.includes("زواج")) return "قانون الأسرة";
-            if (title.includes("جنائي") || title.includes("عقوبات")) return "قانون جنائي";
-            if (title.includes("تجاري") || title.includes("شركات")) return "قانون تجاري";
-            return "عام";
-        },
+window.onload = ()=> render(db);
 
-        like(id) {
-            const file = this.db.find(x => x.id === id);
-            if (file) {
-                file.likes++;
-                this.save();
-                this.render();
-            }
-        },
-
-        download(id) {
-            const file = this.db.find(x => x.id === id);
-            if (file) {
-                file.dl++;
-                this.save();
-                this.render();
-                window.open(file.url, '_blank');
-            }
-        },
-
-        save() {
-            localStorage.setItem('pl_pro_db', JSON.stringify(this.db));
-        },
-
-        showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastText').textContent = message;
-            toast.style.display = 'flex';
-            
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-    };
-
-    function proSearch() {
-        const query = document.getElementById('lawSearch').value.trim();
-        if (!query) return;
-        
-        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}+filetype:pdf+(site:talibdroit.com OR site:elkanoon.blogspot.com OR site:law.ma)`;
-        window.open(searchUrl, "_blank");
-    }
-
-    // تهيئة التطبيق
-    window.onload = () => PartageApp.init();
 </script>
+
 </body>
 </html>
