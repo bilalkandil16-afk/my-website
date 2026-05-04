@@ -1,87 +1,166 @@
-// 1. وظيفة لجلب البيانات من ذاكرة المتصفح أو وضع بيانات افتراضية إذا كانت الذاكرة فارغة
-let uploadedFiles = JSON.parse(localStorage.getItem('legalFiles')) || [
-    { id: 1, name: "الوجيز في القانون المدني", category: "قانون مدني", user: "أمين", date: "منذ ساعة", downloads: 150, likes: 45 },
-    { id: 2, name: "محاضرات القانون الجنائي العام", category: "قانون جنائي", user: "إيمان", date: "منذ يوم", downloads: 90, likes: 22 }
-];
+/**
+ * Partage Légal Core Engine v2.0
+ * بنية احترافية تعتمد على نظام الكائنات وتنظيم الذاكرة
+ */
 
-// 2. وظيفة حفظ البيانات في الذاكرة (تنادى عند كل تغيير)
-function saveData() {
-    localStorage.setItem('legalFiles', JSON.stringify(uploadedFiles));
-}
+const PartageApp = {
+    // 1. قاعدة البيانات (الذاكرة المحلية)
+    db: JSON.parse(localStorage.getItem('pl_db')) || [
+        { id: 1, title: "شرح قانون الالتزامات والعقود المغربي", cat: "قانون مدني", owner: "د. عبد الرزاق", dl: 1240, likes: 450, date: Date.now() - 10000000 },
+        { id: 2, title: "الوجيز في المسطرة الجنائية", cat: "قانون جنائي", owner: "أستاذ كمال", dl: 890, likes: 310, date: Date.now() - 20000000 }
+    ],
 
-// 3. دالة الإعجاب المحدثة (تحفظ النتيجة)
-function toggleLike(id) {
-    const file = uploadedFiles.find(f => f.id === id);
-    if (file) {
-        file.likes++;
-        saveData(); // حفظ التغيير في الذاكرة
-        renderFiles();
-    }
-}
+    currentFilter: 'الكل',
+    searchTerm: '',
 
-// 4. دالة التحميل المحدثة (تحفظ النتيجة)
-function incrementDownload(id) {
-    const file = uploadedFiles.find(f => f.id === id);
-    if (file) {
-        file.downloads++;
-        saveData(); // حفظ التغيير في الذاكرة
-        renderFiles();
-    }
-}
+    // 2. البداية (Initialization)
+    init() {
+        this.render();
+        console.log("Partage Légal Engine: Active");
+    },
 
-// 5. تعديل وظيفة الرفع لتشمل الحفظ في الذاكرة
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+    // 3. محرك العرض (Rendering Engine)
+    render() {
+        const grid = document.getElementById('proLibrary');
+        if (!grid) return;
 
-    let fileName = file.name;
-    let category = "عام";
-    if (fileName.includes("مدني")) category = "قانون مدني";
-    else if (fileName.includes("جنائي")) category = "قانون جنائي";
+        // تصفية البيانات بناءً على القسم وبحث المستخدم
+        let filtered = this.db.filter(f => {
+            const matchesCat = this.currentFilter === 'الكل' || f.cat === this.currentFilter;
+            const matchesSearch = f.title.toLowerCase().includes(this.searchTerm.toLowerCase());
+            return matchesCat && matchesSearch;
+        });
 
-    const newFile = {
-        id: Date.now(),
-        name: fileName,
-        category: category,
-        user: "مساهم جديد",
-        date: "الآن",
-        downloads: 0,
-        likes: 0
-    };
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #a67c52;">لا توجد نتائج تطابق بحثك...</div>`;
+            return;
+        }
 
-    uploadedFiles.unshift(newFile);
-    saveData(); // حفظ الملف الجديد في الذاكرة
-    renderFiles();
-    alert("تم رفع الملف وحفظه في ذاكرة موقعك!");
-}
+        grid.innerHTML = filtered.map(f => this.createCardTemplate(f)).join('');
+    },
 
-// 6. عرض الملفات عند التشغيل
-function renderFiles() {
-    const container = document.getElementById('communityFiles');
-    if (!container) return;
-    
-    container.innerHTML = uploadedFiles.map(file => `
-        <div class="file-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="background: rgba(197, 160, 89, 0.2); color: var(--gold); padding: 3px 12px; border-radius: 20px; font-size: 0.75rem; border: 1px solid var(--gold);">
-                    ${file.category}
-                </span>
-                <div style="display: flex; gap: 10px; font-size: 0.85rem;">
-                    <span title="إعجابات" style="color: #ff4d4d; cursor: pointer;" onclick="toggleLike(${file.id})">
-                        <i class="fa-solid fa-heart"></i> ${file.likes}
-                    </span>
-                    <span title="تحميلات" style="color: var(--gold);">
-                        <i class="fa-solid fa-fire"></i> ${file.downloads}
-                    </span>
+    // 4. قالب البطاقة (Template)
+    createCardTemplate(f) {
+        return `
+            <div class="file-card" data-id="${f.id}">
+                <div class="file-header">
+                    <span class="tag">${f.cat}</span>
+                    <div class="stats">
+                        <span class="like-btn" onclick="PartageApp.handleLike(${f.id})">
+                            <i class="fa-solid fa-heart"></i> ${f.likes}
+                        </span>
+                        <span style="color:var(--gold-bronze)">
+                            <i class="fa-solid fa-fire"></i> ${f.dl}
+                        </span>
+                    </div>
                 </div>
+                <h3 class="file-title">${f.title}</h3>
+                <div class="meta">
+                    <small><i class="fa-solid fa-user-tie"></i> ${f.owner}</small>
+                    <small>${new Date(f.date).toLocaleDateString('ar-MA')}</small>
+                </div>
+                <button class="btn-dl" onclick="PartageApp.handleDownload(${f.id})">
+                    <i class="fa-solid fa-download"></i> تحميل المرجع
+                </button>
             </div>
-            <h3>${file.name}</h3>
-            <p style="font-size: 0.8rem; color: #8892b0; margin: 5px 0 15px 0;">بواسطة: ${file.user} • ${file.date}</p>
-            <a href="javascript:void(0)" onclick="incrementDownload(${file.id})" class="btn-download">
-                <i class="fa-solid fa-download"></i> تحميل الملف
-            </a>
-        </div>
-    `).join('');
+        `;
+    },
+
+    // 5. إدارة الرفع (Upload Management)
+    handleUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        this.showToast("جاري معالجة الملف...");
+
+        setTimeout(() => {
+            const category = this.detectCategory(file.name);
+            const newEntry = {
+                id: Date.now(),
+                title: file.name.replace(/\.[^/.]+$/, ""),
+                cat: category,
+                owner: "باحث قانوني",
+                dl: 0,
+                likes: 0,
+                date: Date.now()
+            };
+
+            this.db.unshift(newEntry);
+            this.syncStorage();
+            this.render();
+            this.showToast("تمت إضافة المرجع للمكتبة بنجاح", "success");
+        }, 800);
+    },
+
+    // 6. التفاعل (Likes & Downloads)
+    handleLike(id) {
+        const item = this.db.find(x => x.id === id);
+        item.likes++;
+        this.syncStorage();
+        this.render();
+    },
+
+    handleDownload(id) {
+        const item = this.db.find(x => x.id === id);
+        item.dl++;
+        this.syncStorage();
+        this.render();
+        this.showToast(`بدأ تحميل: ${item.title}`);
+    },
+
+    // 7. أدوات مساعدة (Helpers)
+    detectCategory(name) {
+        const n = name.toLowerCase();
+        if (n.includes("مدني")) return "قانون مدني";
+        if (n.includes("جنائي") || n.includes("عقوبات")) return "قانون جنائي";
+        if (n.includes("أسرة") || n.includes("أحوال")) return "قانون الأسرة";
+        return "عام";
+    },
+
+    syncStorage() {
+        localStorage.setItem('pl_db', JSON.stringify(this.db));
+    },
+
+    showToast(msg, type = "info") {
+        // إنشاء إشعار احترافي يظهر ويختفي
+        const toast = document.createElement('div');
+        toast.style = `
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #3d1f14; color: #a67c52; padding: 12px 25px;
+            border-radius: 5px; border-bottom: 3px solid #a67c52;
+            z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-family: 'Cairo'; animation: slideUp 0.3s ease;
+        `;
+        toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${msg}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+};
+
+// تشغيل المحرك
+PartageApp.init();
+
+// ربط البحث الخارجي (Google) بالزر
+function proSearch() {
+    const val = document.getElementById('lawSearch').value;
+    if (!val) {
+        PartageApp.showToast("يرجى إدخال نص البحث أولاً");
+        return;
+    }
+    // تحديث البحث الداخلي أيضاً
+    PartageApp.searchTerm = val;
+    PartageApp.render();
+    
+    // البحث الخارجي
+    const query = encodeURIComponent(`"${val}" (site:talibdroit.com OR site:elkanoon.blogspot.com) filetype:pdf`);
+    window.open(`https://www.google.com/search?q=${query}`, "_blank");
 }
 
-renderFiles();
+// ربط الفلترة
+function filterBy(cat) {
+    PartageApp.currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText === cat);
+    });
+    PartageApp.render();
+}
