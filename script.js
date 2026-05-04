@@ -1,161 +1,140 @@
-const PartageApp = {
+const App = (() => {
 
-    db: [],
-    currentFilter: "الكل",
-    searchQuery: "",
-    sortBy: "new",
+    let state = {
+        db: [],
+        search: "",
+        filter: "الكل",
+        sort: "latest"
+    };
 
-    // ================= INIT =================
-    init() {
-        this.load();
-        this.bindEvents();
-        this.renderFilters();
-        this.render();
-    },
+    const KEY = "legal_db_v1";
 
-    // ================= STORAGE =================
-    load() {
-        const data = localStorage.getItem("pl_pro_db");
-        this.db = data ? JSON.parse(data) : [];
-    },
+    function init() {
+        load();
+        bind();
+        render();
+    }
 
-    save() {
-        localStorage.setItem("pl_pro_db", JSON.stringify(this.db));
-    },
+    function load() {
+        const data = JSON.parse(localStorage.getItem(KEY));
+        state.db = data || seed();
+    }
 
-    // ================= SECURITY =================
-    escapeHTML(str) {
-        return str.replace(/[&<>"']/g, m => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        }[m]));
-    },
+    function save() {
+        localStorage.setItem(KEY, JSON.stringify(state.db));
+    }
 
-    // ================= SEARCH =================
-    normalize(text) {
-        return text
-            .toLowerCase()
-            .replace(/[أإآ]/g, "ا")
-            .replace(/ة/g, "ه");
-    },
+    function seed() {
+        return [
+            {
+                id: 1,
+                title: "شرح قانون الالتزامات والعقود",
+                cat: "قانون مدني",
+                url: "https://example.com",
+                likes: 5,
+                date: Date.now()
+            }
+        ];
+    }
 
-    debounce(fn, delay = 300) {
-        let timer;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => fn.apply(this, args), delay);
-        };
-    },
+    function bind() {
 
-    bindEvents() {
-        const input = document.getElementById("lawSearch");
-        if (input) {
-            input.addEventListener("input", this.debounce(e => {
-                this.searchQuery = this.normalize(e.target.value);
-                this.render();
-            }));
-        }
-    },
+        document.getElementById("searchInput")
+        .addEventListener("input", e => {
+            state.search = e.target.value.toLowerCase();
+            render();
+        });
 
-    // ================= FILTER =================
-    setFilter(cat) {
-        this.currentFilter = cat;
-        this.renderFilters();
-        this.render();
-    },
+        document.getElementById("filterSelect")
+        .addEventListener("change", e => {
+            state.filter = e.target.value;
+            render();
+        });
 
-    renderFilters() {
-        const cats = ["الكل", "قانون مدني", "قانون الأسرة", "قانون جنائي"];
-        const el = document.getElementById("filterBar");
+        document.getElementById("sortSelect")
+        .addEventListener("change", e => {
+            state.sort = e.target.value;
+            render();
+        });
+    }
 
-        el.innerHTML = cats.map(c => `
-            <button class="filter-btn ${c === this.currentFilter ? "active" : ""}"
-            onclick="PartageApp.setFilter('${c}')">${c}</button>
-        `).join("");
-    },
+    function process() {
+        let data = [...state.db];
 
-    // ================= SORT =================
-    sortData(data) {
-        if (this.sortBy === "new") {
-            return data.sort((a,b) => b.date - a.date);
-        }
-        if (this.sortBy === "popular") {
-            return data.sort((a,b) => b.dl - a.dl);
-        }
-        return data;
-    },
-
-    // ================= MAIN RENDER =================
-    render() {
-        let data = [...this.db];
-
-        // filter
-        if (this.currentFilter !== "الكل") {
-            data = data.filter(x => x.cat === this.currentFilter);
+        if (state.filter !== "الكل") {
+            data = data.filter(x => x.cat === state.filter);
         }
 
-        // search
-        if (this.searchQuery) {
+        if (state.search) {
             data = data.filter(x =>
-                this.normalize(x.title).includes(this.searchQuery)
+                x.title.toLowerCase().includes(state.search)
             );
         }
 
-        // sort
-        data = this.sortData(data);
+        if (state.sort === "latest") {
+            data.sort((a,b) => b.date - a.date);
+        } else {
+            data.sort((a,b) => b.likes - a.likes);
+        }
 
-        this.renderGrid(data);
-    },
+        return data;
+    }
 
-    renderGrid(data) {
-        const grid = document.getElementById("proLibrary");
+    function render() {
+        const grid = document.getElementById("grid");
+        const data = process();
 
         if (!data.length) {
-            grid.innerHTML = `<div class="empty">❌ لا توجد نتائج</div>`;
+            grid.innerHTML = "<p>لا توجد نتائج</p>";
             return;
         }
 
         grid.innerHTML = data.map(item => `
-            <div class="file-card">
-                <div class="card-body">
-                    <span class="tag">${this.escapeHTML(item.cat)}</span>
-                    <h3>${this.escapeHTML(item.title)}</h3>
+            <div class="card">
+                <div class="tag">${item.cat}</div>
+                <h3>${item.title}</h3>
 
-                    <div class="stats">
-                        <span onclick="PartageApp.like(${item.id})">❤️ ${item.likes}</span>
-                        <span>⬇ ${item.dl}</span>
-                    </div>
+                <p>❤️ ${item.likes}</p>
 
-                    <a href="${item.url}" target="_blank"
-                    onclick="PartageApp.download(${item.id})"
-                    class="btn-dl">تحميل</a>
-                </div>
+                <a href="#" onclick="App.like(${item.id})" class="btn">إعجاب</a>
+                <a href="${item.url}" target="_blank" class="btn">فتح</a>
             </div>
         `).join("");
-    },
-
-    // ================= ACTIONS =================
-    like(id) {
-        const item = this.db.find(x => x.id === id);
-        if (item) {
-            item.likes++;
-            this.save();
-            this.render();
-        }
-    },
-
-    download(id) {
-        const item = this.db.find(x => x.id === id);
-        if (item) {
-            item.dl++;
-            this.save();
-        }
     }
 
-};
+    function like(id) {
+        const item = state.db.find(x => x.id === id);
+        item.likes++;
+        save();
+        render();
+    }
 
-// INIT
-window.onload = () => PartageApp.init();
+    function addPrompt() {
+        const title = prompt("اسم المرجع:");
+        const url = prompt("الرابط:");
+
+        if (!title || !url) return;
+
+        state.db.unshift({
+            id: Date.now(),
+            title,
+            url,
+            cat: detect(title),
+            likes: 0,
+            date: Date.now()
+        });
+
+        save();
+        render();
+    }
+
+    function detect(t) {
+        if (t.includes("جنائي")) return "قانون جنائي";
+        return "قانون مدني";
+    }
+
+    return { init, like, addPrompt };
+
+})();
+
+window.onload = App.init;
