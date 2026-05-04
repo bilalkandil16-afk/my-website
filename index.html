@@ -1,23 +1,30 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚖️ رادار القانون الذكي</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <div class="container">
-        <h1>رادار البحث القانوني</h1>
-        <p>ابحث عن الكتب والشروحات القانونية بضغطة واحدة</p>
-        
-        <input type="text" id="lawInput" placeholder="أدخل اسم الكتاب (مثلاً: الالتزامات والعقود)...">
-        <button onclick="startSearch()">ابحث الآن</button>
-        
-        <div id="status" style="margin-top: 20px; color: #a8b8d8;"></div>
+<div class="section-box">
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <i class="fa-solid fa-magnifying-glass-chart" style="font-size: 2rem; color: var(--gold);"></i>
+        <h2 style="margin: 0;">Legal Research Engine</h2>
     </div>
+    
+    <p style="color: #a8b8d8; margin-bottom: 20px;">
+        محرك البحث المتخصص في استخراج المراجع القانونية بصيغة PDF من المستودعات الرقمية الموثوقة.
+    </p>
 
-    <script src="script.js"></script>
-</body>
-</html>
+    <div class="search-wrapper" style="border: 2px solid var(--gold); background: #0a192f; padding: 10px;">
+        <input type="text" id="lawSearch" 
+               style="background: transparent; color: white; border: none; font-size: 1.1rem;" 
+               placeholder="مثلاً: محاضرات في القانون الجنائي، مذكرات الضمان الاجتماعي...">
+        
+        <button class="btn-search" onclick="globalSearch()" 
+                style="padding: 12px 30px; font-size: 1rem; border-radius: 5px;">
+            <i class="fa-solid fa-gavel"></i> بحث قانوني
+        </button>
+    </div>
+    
+    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <span style="font-size: 0.8rem; background: rgba(197, 160, 89, 0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--gold);">
+            تحليل ملفات PDF فقط
+        </span>
+        <span style="font-size: 0.8rem; background: rgba(197, 160, 89, 0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--gold);">
+            مصادر مغربية وعربية موثوقة
+        </span>
+    </div>
+</div>
