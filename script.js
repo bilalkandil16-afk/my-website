@@ -1,201 +1,161 @@
-// ====================== Partage Légal - JavaScript Professional ======================
-
 const PartageApp = {
+
     db: [],
     currentFilter: "الكل",
+    searchQuery: "",
+    sortBy: "new",
 
-    // ==================== تهيئة التطبيق ====================
+    // ================= INIT =================
     init() {
-        this.loadFromStorage();
+        this.load();
+        this.bindEvents();
         this.renderFilters();
         this.render();
     },
 
-    // ==================== تخزين البيانات ====================
-    loadFromStorage() {
-        const saved = localStorage.getItem('pl_pro_db');
-        this.db = saved ? JSON.parse(saved) : [
-            {
-                id: 1,
-                title: "شرح قانون الالتزامات والعقود - الجزء الأول والثاني",
-                cat: "قانون مدني",
-                url: "https://example.com/ref1.pdf",
-                owner: "د. أحمد الرحماني",
-                dl: 1240,
-                likes: 87,
-                date: Date.now() - 86400000 * 3
-            },
-            {
-                id: 2,
-                title: "دليل قانون الأسرة المغربي مع التعديلات الجديدة",
-                cat: "قانون الأسرة",
-                url: "https://example.com/ref2.pdf",
-                owner: "مساهم قانوني",
-                dl: 980,
-                likes: 64,
-                date: Date.now() - 86400000 * 5
-            }
-        ];
+    // ================= STORAGE =================
+    load() {
+        const data = localStorage.getItem("pl_pro_db");
+        this.db = data ? JSON.parse(data) : [];
     },
 
-    syncStorage() {
-        localStorage.setItem('pl_pro_db', JSON.stringify(this.db));
+    save() {
+        localStorage.setItem("pl_pro_db", JSON.stringify(this.db));
     },
 
-    // ==================== تصنيف تلقائي ====================
-    detectCategory(title) {
-        const t = title.toLowerCase();
-        if (/مدني|التزامات|عقود|مسؤولية/.test(t)) return "قانون مدني";
-        if (/أسرة|زواج|طلاق|ميراث|حضانة/.test(t)) return "قانون الأسرة";
-        if (/جنائي|عقوبات|جرائم|جنح/.test(t)) return "قانون جنائي";
-        if (/تجاري|شركات|تجارة|منافسة/.test(t)) return "قانون تجاري";
-        if (/دستور|دستوري/.test(t)) return "قانون دستوري";
-        if (/إداري|إدارة|جماعات/.test(t)) return "قانون إداري";
-        return "مراجع عامة";
+    // ================= SECURITY =================
+    escapeHTML(str) {
+        return str.replace(/[&<>"']/g, m => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[m]));
     },
 
-    // ==================== رفع مرجع جديد ====================
-    handleUpload() {
-        const title = prompt("أدخل اسم الكتاب أو الملخص:");
-        if (!title?.trim()) return this.showToast("يرجى إدخال اسم المرجع", "error");
+    // ================= SEARCH =================
+    normalize(text) {
+        return text
+            .toLowerCase()
+            .replace(/[أإآ]/g, "ا")
+            .replace(/ة/g, "ه");
+    },
 
-        const url = prompt("أدخل رابط التحميل (Google Drive, Mega, Dropbox...):");
-        if (!url?.trim()) return this.showToast("يرجى إدخال رابط صحيح", "error");
-
-        const newEntry = {
-            id: Date.now(),
-            title: title.trim(),
-            url: url.trim(),
-            cat: this.detectCategory(title),
-            owner: "مساهم قانوني",
-            dl: 0,
-            likes: 0,
-            date: Date.now()
+    debounce(fn, delay = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), delay);
         };
-
-        this.db.unshift(newEntry);
-        this.syncStorage();
-        this.render();
-        this.showToast("✅ تمت إضافة المرجع بنجاح", "success");
     },
 
-    // ==================== تحميل المرجع ====================
-    handleDownload(id) {
-        const item = this.db.find(x => x.id === id);
-        if (!item?.url) {
-            this.showToast("❌ الرابط غير متوفر حالياً", "error");
+    bindEvents() {
+        const input = document.getElementById("lawSearch");
+        if (input) {
+            input.addEventListener("input", this.debounce(e => {
+                this.searchQuery = this.normalize(e.target.value);
+                this.render();
+            }));
+        }
+    },
+
+    // ================= FILTER =================
+    setFilter(cat) {
+        this.currentFilter = cat;
+        this.renderFilters();
+        this.render();
+    },
+
+    renderFilters() {
+        const cats = ["الكل", "قانون مدني", "قانون الأسرة", "قانون جنائي"];
+        const el = document.getElementById("filterBar");
+
+        el.innerHTML = cats.map(c => `
+            <button class="filter-btn ${c === this.currentFilter ? "active" : ""}"
+            onclick="PartageApp.setFilter('${c}')">${c}</button>
+        `).join("");
+    },
+
+    // ================= SORT =================
+    sortData(data) {
+        if (this.sortBy === "new") {
+            return data.sort((a,b) => b.date - a.date);
+        }
+        if (this.sortBy === "popular") {
+            return data.sort((a,b) => b.dl - a.dl);
+        }
+        return data;
+    },
+
+    // ================= MAIN RENDER =================
+    render() {
+        let data = [...this.db];
+
+        // filter
+        if (this.currentFilter !== "الكل") {
+            data = data.filter(x => x.cat === this.currentFilter);
+        }
+
+        // search
+        if (this.searchQuery) {
+            data = data.filter(x =>
+                this.normalize(x.title).includes(this.searchQuery)
+            );
+        }
+
+        // sort
+        data = this.sortData(data);
+
+        this.renderGrid(data);
+    },
+
+    renderGrid(data) {
+        const grid = document.getElementById("proLibrary");
+
+        if (!data.length) {
+            grid.innerHTML = `<div class="empty">❌ لا توجد نتائج</div>`;
             return;
         }
 
-        item.dl++;
-        this.syncStorage();
-        this.render();
+        grid.innerHTML = data.map(item => `
+            <div class="file-card">
+                <div class="card-body">
+                    <span class="tag">${this.escapeHTML(item.cat)}</span>
+                    <h3>${this.escapeHTML(item.title)}</h3>
 
-        window.open(item.url, "_blank");
+                    <div class="stats">
+                        <span onclick="PartageApp.like(${item.id})">❤️ ${item.likes}</span>
+                        <span>⬇ ${item.dl}</span>
+                    </div>
+
+                    <a href="${item.url}" target="_blank"
+                    onclick="PartageApp.download(${item.id})"
+                    class="btn-dl">تحميل</a>
+                </div>
+            </div>
+        `).join("");
     },
 
-    // ==================== الإعجاب ====================
+    // ================= ACTIONS =================
     like(id) {
         const item = this.db.find(x => x.id === id);
         if (item) {
             item.likes++;
-            this.syncStorage();
+            this.save();
             this.render();
         }
     },
 
-    // ==================== الفلاتر ====================
-    renderFilters() {
-        const categories = ["الكل", "قانون مدني", "قانون الأسرة", "قانون جنائي", "قانون تجاري", "قانون دستوري", "قانون إداري", "مراجع عامة"];
-        const container = document.getElementById('filterBar');
-
-        container.innerHTML = categories.map(cat => `
-            <button class="filter-btn ${cat === this.currentFilter ? 'active' : ''}" 
-                    onclick="PartageApp.setFilter('${cat}')">
-                ${cat}
-            </button>
-        `).join('');
-    },
-
-    setFilter(category) {
-        this.currentFilter = category;
-        this.renderFilters();
-        this.render();
-    },
-
-    // ==================== عرض المكتبة ====================
-    render() {
-        const grid = document.getElementById('proLibrary');
-        let filteredData = this.db;
-
-        if (this.currentFilter !== "الكل") {
-            filteredData = this.db.filter(item => item.cat === this.currentFilter);
+    download(id) {
+        const item = this.db.find(x => x.id === id);
+        if (item) {
+            item.dl++;
+            this.save();
         }
-
-        grid.innerHTML = filteredData.map(item => `
-            <div class="file-card">
-                <div class="card-body">
-                    <span class="tag">${item.cat}</span>
-                    <h3>${item.title}</h3>
-                    
-                    <div class="meta">
-                        <small>بواسطة: ${item.owner}</small><br>
-                        <small>تاريخ الإضافة: ${new Date(item.date).toLocaleDateString('ar-MA')}</small>
-                    </div>
-
-                    <div class="stats">
-                        <span onclick="PartageApp.like(${item.id}); event.stopImmediatePropagation()" style="cursor:pointer;">
-                            ❤️ ${item.likes}
-                        </span>
-                        <span><i class="fa-solid fa-download"></i> ${item.dl.toLocaleString()}</span>
-                    </div>
-
-                    <a href="#" onclick="PartageApp.handleDownload(${item.id}); event.preventDefault()" class="btn-dl">
-                        <i class="fa-solid fa-download"></i> تحميل المرجع
-                    </a>
-                </div>
-            </div>
-        `).join('');
-    },
-
-    // ==================== إشعارات ====================
-    showToast(message, type = "success") {
-        let toast = document.getElementById('toast');
-        
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toast';
-            document.body.appendChild(toast);
-        }
-
-        toast.style.cssText = `
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 16px 28px;
-            border-radius: 50px;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            font-weight: 500;
-            background: ${type === "success" ? "#2c1a12" : "#c0392b"};
-        `;
-
-        toast.innerHTML = `
-            <i class="fa-solid ${type === "success" ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
-            <span>${message}</span>
-        `;
-
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 400);
-        }, 3200);
     }
+
 };
 
-// ====================== تهيئة عند تحميل الصفحة ======================
+// INIT
 window.onload = () => PartageApp.init();
