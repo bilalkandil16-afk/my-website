@@ -1,57 +1,48 @@
-// 1. مصفوفة الملفات مع إضافة عداد التحميلات
+// 1. مصفوفة البيانات المحدثة
 let uploadedFiles = [
-    { id: 1, name: "شرح قانون الالتزامات والعقود", category: "قانون مدني", user: "أحمد", date: "منذ ساعة", downloads: 124 },
-    { id: 2, name: "دليل المحامي المبتدئ", category: "مهنة المحاماة", user: "سارة", date: "منذ يوم", downloads: 85 }
+    { id: 1, name: "الوجيز في القانون المدني", category: "قانون مدني", user: "أمين", date: "منذ ساعة", downloads: 150, likes: 45 },
+    { id: 2, name: "محاضرات القانون الجنائي العام", category: "قانون جنائي", user: "إيمان", date: "منذ يوم", downloads: 90, likes: 22 }
 ];
 
-// 2. دالة زيادة عدد التحميلات
-function incrementDownload(id) {
+// 2. دالة الإعجاب (Like)
+function toggleLike(id) {
     const file = uploadedFiles.find(f => f.id === id);
     if (file) {
-        file.downloads++; // زيادة العداد
-        renderFiles();    // تحديث الواجهة فوراً
-        console.log(`تم تحميل: ${file.name}. العداد الحالي: ${file.downloads}`);
+        file.likes++; // زيادة الإعجابات
+        renderFiles();
     }
 }
 
-// 3. تحديث دالة الرفع لتشمل العداد الجديد
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    let fileName = file.name;
-    let category = "عام";
-    if (fileName.includes("مدني")) category = "قانون مدني";
-    else if (fileName.includes("جنائي")) category = "قانون جنائي";
-
-    const newFile = {
-        id: Date.now(), // رقم فريد لكل ملف
-        name: fileName,
-        category: category,
-        user: "مساهم جديد",
-        date: "الآن",
-        downloads: 0 // يبدأ من الصفر
-    };
-
-    uploadedFiles.unshift(newFile);
-    renderFiles();
+// 3. دالة التحميل (Download)
+function incrementDownload(id) {
+    const file = uploadedFiles.find(f => f.id === id);
+    if (file) {
+        file.downloads++;
+        renderFiles();
+    }
 }
 
-// 4. تحديث دالة العرض لتظهر الأيقونة والعداد
+// 4. تحديث العرض ليظهر الأزرار الجديدة
 function renderFiles() {
     const container = document.getElementById('communityFiles');
     container.innerHTML = uploadedFiles.map(file => `
         <div class="file-card">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div style="background: var(--gold); color: var(--navy); padding: 2px 10px; border-radius: 5px; font-size: 0.7rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="background: rgba(197, 160, 89, 0.2); color: var(--gold); padding: 3px 12px; border-radius: 20px; font-size: 0.75rem; border: 1px solid var(--gold);">
                     ${file.category}
-                </div>
-                <div style="color: var(--gold); font-size: 0.85rem;">
-                    <i class="fa-solid fa-fire"></i> ${file.downloads}
+                </span>
+                <div style="display: flex; gap: 10px; font-size: 0.85rem;">
+                    <span title="إعجابات" style="color: #ff4d4d; cursor: pointer;" onclick="toggleLike(${file.id})">
+                        <i class="fa-solid fa-heart"></i> ${file.likes}
+                    </span>
+                    <span title="تحميلات" style="color: var(--gold);">
+                        <i class="fa-solid fa-fire"></i> ${file.downloads}
+                    </span>
                 </div>
             </div>
-            <h3 style="margin-top: 10px;">${file.name}</h3>
-            <span class="file-info">بواسطة: ${file.user} • ${file.date}</span>
+            <h3>${file.name}</h3>
+            <p style="font-size: 0.8rem; color: #8892b0; margin: 5px 0 15px 0;">بواسطة: ${file.user} • ${file.date}</p>
+            
             <a href="javascript:void(0)" onclick="incrementDownload(${file.id})" class="btn-download">
                 <i class="fa-solid fa-download"></i> تحميل الملف
             </a>
