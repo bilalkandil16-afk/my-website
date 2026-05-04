@@ -1,341 +1,67 @@
-/* ====================== Partage Légal - CSS Professional v2 ====================== */
-
-:root {
-    --dark-wood: #2c1a12;
-    --accent-gold: #c5a059;
-    --gold-light: #e6d4a8;
-    --legal-brown: #5c3023;
-    --paper: #fdfaf5;
-    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 15px 35px rgba(61, 31, 20, 0.1);
-    --shadow-lg: 0 25px 60px rgba(61, 31, 20, 0.15);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: 'Cairo', sans-serif;
-    background: #f5f0e6;
-    background-image: 
-        linear-gradient(rgba(44, 26, 18, 0.04), rgba(44, 26, 18, 0.04)),
-        url('https://www.transparenttextures.com/patterns/cream-paper.png');
-    color: #333;
-    line-height: 1.7;
+    background: #f4f6f9;
+    margin: 0;
 }
 
-/* ====================== Header ====================== */
 header {
-    background: linear-gradient(135deg, var(--dark-wood), #1a0d08);
-    padding: 65px 20px 85px;
+    background: #1e2a38;
+    color: white;
     text-align: center;
-    position: relative;
-    overflow: hidden;
+    padding: 30px;
 }
 
-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 7px;
-    background: linear-gradient(to right, transparent, var(--accent-gold), transparent);
-}
-
-/* ====================== Container & Sections ====================== */
-.container {
-    max-width: 1220px;
-    margin: -55px auto 60px;
-    padding: 0 20px;
-}
-
-.section-box {
-    background: white;
-    padding: 42px 38px;
-    border-radius: 16px;
-    margin-bottom: 38px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid rgba(197, 160, 89, 0.12);
-    transition: var(--transition);
-}
-
-.section-box:hover {
-    box-shadow: var(--shadow-lg);
-}
-
-/* ====================== Upload Zone ====================== */
-.upload-zone {
-    border: 3px dashed var(--accent-gold);
-    padding: 60px 40px;
-    text-align: center;
-    border-radius: 18px;
-    background: #fcfbf7;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.upload-zone:hover {
-    background: white;
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--legal-brown);
-}
-
-.upload-zone i {
-    font-size: 4.8rem;
-    color: var(--legal-brown);
-    margin-bottom: 22px;
-    transition: var(--transition);
-}
-
-.upload-zone:hover i {
-    transform: scale(1.12) rotate(8deg);
-    color: var(--accent-gold);
-}
-
-/* ====================== Search ====================== */
-.search-group {
+.controls {
     display: flex;
-    background: white;
-    border: 3px solid var(--accent-gold);
-    border-radius: 50px;
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-    transition: var(--transition);
-}
-
-.search-group:focus-within {
-    border-color: var(--legal-brown);
-    box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.2);
-}
-
-.search-group input {
-    flex: 1;
-    border: none;
-    padding: 18px 28px;
-    font-size: 1.1rem;
-    outline: none;
-    background: transparent;
-}
-
-.search-group button {
-    background: var(--dark-wood);
-    color: var(--accent-gold);
-    border: none;
-    padding: 0 38px;
-    font-size: 1.35rem;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.search-group button:hover {
-    background: #3d2419;
-    transform: scale(1.05);
-}
-
-/* ====================== Filters ====================== */
-.filters {
-    display: flex;
-    gap: 12px;
+    gap: 10px;
+    padding: 20px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
-.filter-btn {
-    padding: 10px 24px;
-    border: 2px solid #e0d9c8;
-    background: white;
-    border-radius: 50px;
+input, select, button {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #c5a059;
+    color: white;
     cursor: pointer;
-    font-weight: 500;
-    transition: var(--transition);
 }
 
-.filter-btn.active,
-.filter-btn:hover {
-    background: var(--dark-wood);
-    color: var(--accent-gold);
-    border-color: var(--accent-gold);
-}
-
-/* ====================== File Cards (التحفة) ====================== */
-.files-grid {
+.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(345px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
 
-.file-card {
+.card {
     background: white;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    border-top: 6px solid var(--legal-brown);
-    transition: var(--transition);
-    position: relative;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    transition: 0.3s;
 }
 
-.file-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 60px 60px 0;
-    border-color: transparent var(--accent-gold) transparent transparent;
-    opacity: 0.08;
-    transition: var(--transition);
-}
-
-.file-card:hover {
-    transform: translateY(-14px);
-    box-shadow: var(--shadow-lg);
-    border-top-color: var(--accent-gold);
-}
-
-.file-card:hover::before {
-    opacity: 0.15;
-}
-
-.card-body {
-    padding: 28px;
+.card:hover {
+    transform: translateY(-5px);
 }
 
 .tag {
-    display: inline-block;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--accent-gold);
-    background: rgba(197, 160, 89, 0.09);
-    padding: 5px 14px;
-    border-radius: 30px;
-    margin-bottom: 16px;
+    color: #c5a059;
+    font-weight: bold;
 }
 
-.file-title {
-    font-family: 'Amiri', serif;
-    font-size: 1.38rem;
-    line-height: 1.35;
-    min-height: 3.7rem;
-    margin-bottom: 18px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    color: #222;
-}
-
-.meta {
-    font-size: 0.86rem;
-    color: #666;
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
-
-.stats {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 22px 0;
-    font-size: 1rem;
-}
-
-.stats span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-}
-
-.btn-dl {
+.btn {
     display: block;
-    width: 100%;
-    background: linear-gradient(135deg, var(--dark-wood), #3d2419);
-    color: var(--accent-gold);
-    padding: 15px;
+    margin-top: 10px;
+    padding: 10px;
     text-align: center;
-    text-decoration: none;
-    font-weight: 700;
-    border-radius: 8px;
-    font-size: 1.08rem;
-    transition: var(--transition);
-    border: 2px solid transparent;
-}
-
-.btn-dl:hover {
-    background: transparent;
-    color: var(--dark-wood);
-    border-color: var(--dark-wood);
-    transform: translateY(-2px);
-}
-
-/* ====================== Toast Notification ====================== */
-.toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 16px 30px;
-    border-radius: 50px;
+    background: #1e2a38;
     color: white;
-    display: none;
-    align-items: center;
-    gap: 12px;
-    z-index: 10000;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-    animation: slideUp 0.4s ease forwards;
-}
-
-@keyframes slideUp {
-    from { 
-        opacity: 0; 
-        transform: translate(-50%, 30px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translate(-50%, 0); 
-    }
-}
-
-/* ====================== Responsive ====================== */
-@media (max-width: 768px) {
-    .container {
-        margin-top: -35px;
-    }
-    
-    .section-box {
-        padding: 28px 22px;
-    }
-    
-    .search-group {
-        flex-direction: column;
-        border-radius: 12px;
-    }
-    
-    .search-group button {
-        padding: 16px;
-    }
-    
-    .files-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 22px;
-    }
-    
-    .logo {
-        font-size: 2.7rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .file-title {
-        font-size: 1.25rem;
-        min-height: auto;
-    }
+    border-radius: 6px;
+    text-decoration: none;
 }
