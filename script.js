@@ -6,7 +6,7 @@ function startSearch() {
         return;
     }
 
-    // قائمة المواقع
+    // القائمة الذهبية للمواقع القانونية التي اخترتها
     const sites = [
         "talibdroit.com",
         "elkanoon.blogspot.com",
@@ -17,12 +17,14 @@ function startSearch() {
         "fsjesouissi.com"
     ];
 
-    // صياغة بحث Google احترافية
+    // تحويل المواقع إلى صيغة يفهمها Google (site:example.com OR site:test.com)
     const sitesQuery = sites.map(site => `site:${site}`).join(" OR ");
     
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(
-        `"\( {bookTitle}" ( \){sitesQuery}) filetype:pdf`
-    )}`;
+    // بناء رابط البحث الاحترافي: يبحث عن العنوان + المواقع المحددة + نوع الملف PDF
+    const finalQuery = `"${bookTitle}" (${sitesQuery}) filetype:pdf`;
+    
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(finalQuery)}`;
 
+    // فتح النتائج في نافذة جديدة
     window.open(searchUrl, "_blank");
 }
