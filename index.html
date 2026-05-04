@@ -1,142 +1,42 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚖️ Partage Légal PRO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partage Légal</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style>
-body {
-  font-family: 'Cairo', sans-serif;
-  background: linear-gradient(135deg,#1a0d08,#2c1a12);
-  color: #eee;
-  margin: 0;
-}
-
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
-}
-
-h1 {
-  text-align: center;
-  color: gold;
-}
-
-.search-box {
-  display: flex;
-  gap: 10px;
-  margin: 20px 0;
-}
-
-input {
-  flex: 1;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-}
-
-button {
-  padding: 12px;
-  background: gold;
-  border: none;
-  cursor: pointer;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
-  gap: 15px;
-}
-
-.card {
-  background: #2c1a12;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.empty {
-  text-align: center;
-  opacity: 0.6;
-}
-</style>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<div class="container">
+<header>
+    <h1>⚖️ Partage Légal</h1>
+    <p>منصة ذكية لمشاركة المراجع القانونية</p>
+</header>
 
-<h1>⚖️ Partage Légal PRO</h1>
+<section class="controls">
 
-<div class="search-box">
-<input id="search" placeholder="ابحث داخل المكتبة...">
-<button onclick="search()">بحث</button>
-<button onclick="externalSearch()">🌐</button>
-</div>
+    <input id="searchInput" type="text" placeholder="🔍 ابحث عن مرجع...">
 
-<div id="grid" class="grid"></div>
+    <select id="filterSelect">
+        <option value="الكل">الكل</option>
+        <option value="قانون مدني">قانون مدني</option>
+        <option value="قانون جنائي">قانون جنائي</option>
+    </select>
 
-</div>
+    <select id="sortSelect">
+        <option value="latest">الأحدث</option>
+        <option value="popular">الأكثر إعجابًا</option>
+    </select>
 
-<script>
+    <button onclick="App.addPrompt()">➕ إضافة</button>
 
-const db = [
-{ id:1,title:"قانون الالتزامات والعقود",cat:"مدني",url:"https://example.com" },
-{ id:2,title:"القانون الجنائي",cat:"جنائي",url:"https://example.com" },
-{ id:3,title:"قانون الأسرة",cat:"أسرة",url:"https://example.com" }
-];
+</section>
 
-// 🔍 normalize عربي
-function normalize(t){
-return t.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه");
-}
+<section id="grid" class="grid"></section>
 
-// 🔍 بحث داخلي
-function search(){
-const q = normalize(document.getElementById("search").value);
-
-const result = db.filter(b=>{
-return normalize(b.title).includes(q);
-});
-
-render(result);
-}
-
-// 🌐 بحث خارجي
-function externalSearch(){
-const q = document.getElementById("search").value;
-window.open("https://www.google.com/search?q="+q+" pdf");
-}
-
-// 🎨 عرض
-function render(data){
-
-const grid = document.getElementById("grid");
-
-if(data.length === 0){
-grid.innerHTML = `<div class="empty">❌ لا توجد نتائج</div>`;
-return;
-}
-
-grid.innerHTML = data.map(b=>`
-<div class="card">
-<h3>${b.title}</h3>
-<p>${b.cat}</p>
-<a href="${b.url}" target="_blank">تحميل</a>
-</div>
-`).join("");
-
-}
-
-// 🔥 live search
-document.getElementById("search").addEventListener("input",search);
-
-window.onload = ()=> render(db);
-
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
